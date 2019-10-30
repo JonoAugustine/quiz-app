@@ -1,5 +1,9 @@
 const second = 1000;
-const default_timer = 90;
+const default_timer = 100;
+const default_timout = 1 * second;
+// TODO I don't like having this be a top-level
+// variable but im not sure how to handle passing it to new components
+var timer_value = null; // TODO reset to null
 
 const elementOf = (tag, style, scope) => {
   const e = document.createElement(tag);
@@ -23,18 +27,23 @@ const readStyle = style => {
 
 const root = document.querySelector("#root");
 
-const div = todo => {
-  const e = document.createElement("div");
-  if (todo) e.innerHTML = "TODO";
-  return e;
-};
+const div = todo => document.createElement("div");
 
-const contentDiv = () => {
-  return elementOf("div", {
-    margin: "0 auto",
-    width: "70%"
+const contentDiv = width =>
+  elementOf("div", {
+    margin: "5% auto 0 auto",
+    width: width == null ? "70%" : width
   });
-};
+
+const headerOf = (level, text, style, scope) =>
+  elementOf(
+    "h" + (level == null ? 1 : level),
+    style == null ? {} : style,
+    h => {
+      h.textContent = text;
+      if (typeof scope == "function") scope(h);
+    }
+  );
 
 const button = (text, centered, onClick) =>
   elementOf(
@@ -44,8 +53,8 @@ const button = (text, centered, onClick) =>
       height: "25px",
       "border-color": "black",
       "background-color": "white",
-      margin: centered ? '0 auto' : '',
-      display: 'block'
+      margin: centered ? "0 auto" : "",
+      display: "block"
     },
     e => {
       e.innerHTML = text;
@@ -69,9 +78,19 @@ const show = (child, clearRoot) => {
 };
 
 const questions = [
-    {
-        text: '',
-        choices: [],
-        answer: ''
-    }
-]
+  {
+    text: "What is a number?",
+    choices: ["a string", "a flamingo", "a digit", "fake news"],
+    answer: "fake news"
+  },
+  {
+    text: "What is javascript",
+    choices: ["witchcraft", "java", "technobabel", "fake news"],
+    answer: "fake news"
+  },
+  {
+    text: "Why is Gamora?",
+    choices: ["because", "uhh", "ÿes"],
+    answer: "ÿes"
+  }
+];
