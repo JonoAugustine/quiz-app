@@ -221,4 +221,4 @@ const saveResults = () => {
   }
 };
 
-show(highscores());
+show(home());
