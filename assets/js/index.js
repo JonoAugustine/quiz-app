@@ -1,6 +1,6 @@
 // Components
 
-const nav = () =>
+const nav = (start_timer) =>
   build(
     div({
       top: 0,
@@ -26,11 +26,12 @@ const nav = () =>
       },
       e => {
         e.textContent = "Time: " + (timer_value == null ? 0 : timer_value);
-        if (timer_value != null) {
-          let timer = setInterval(() => {
+        if (start_timer) {
+          timer_interval = setInterval(() => {
             timer_value--;
             e.textContent = "Time: " + timer_value;
             if (timer_value <= 0) {
+              show(quizEndPage());
               clearInterval(timer);
             }
           }, second);
@@ -101,7 +102,7 @@ const quizQuestion = (question, nextQ, footer) => {
 
 const quizPage = () => {
   timer_value = default_timer;
-  const base = build(div(), nav());
+  const base = build(div(), nav(true));
 
   const content = contentDiv("40%");
   build(base, content);
@@ -110,17 +111,14 @@ const quizPage = () => {
   const footer = contentDiv("30%");
   build(base, footer);
 
-  let availableQ = questions;
+  let currentQ = 0;
 
   const nextQ = () => {
-    if (availableQ.length == 0) {
+    if (currentQ == questions.length) {
       show(quizEndPage());
     } else {
       clear(content);
-      let r = Math.floor(Math.random() * availableQ.length);
-      let randQ = availableQ[r];
-      availableQ.splice(r, 1);
-      build(content, quizQuestion(randQ, nextQ, footer));
+      build(content, quizQuestion(questions[currentQ++], nextQ, footer));
     }
   };
 
@@ -129,8 +127,9 @@ const quizPage = () => {
   return base;
 };
 
-const quizEndPage = () =>
-  build(
+const quizEndPage = () => {
+  clearInterval(timer_interval);
+  return build(
     div(),
     build(
       contentDiv("35%"),
@@ -168,12 +167,13 @@ const quizEndPage = () =>
       )
     )
   );
+};
 
 const highscores = () => {
   const scoreDiv = div();
 
   const refresh = () => {
-    clear(scoreDiv)
+    clear(scoreDiv);
     loadLocal()
       .sort((a, b) => a.score - b.score)
       .forEach(score =>
@@ -219,6 +219,7 @@ const saveResults = () => {
     saveLocal(s);
     show(highscores());
   }
+  timer_value = null
 };
 
 show(home());

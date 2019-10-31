@@ -36,3 +36,4 @@ const storage_location = "scores";
  * TODO variable but im not sure how to handle passing it to new components
  */
 var timer_value = null;
+var timer_interval = null;
