@@ -75,7 +75,7 @@ const headerOf = (level, text, style, scope) =>
  * @param {boolean} centered whether the button should be centered.
  * @param {function} onClick The function to call on click.
  */
-const button = (text, centered, onClick) =>
+const buttonOf = (text, centered, onClick) =>
   elementOf(
     "button",
     {

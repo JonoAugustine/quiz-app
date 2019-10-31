@@ -55,7 +55,7 @@ const home = () =>
           e.textContent = "Click to start a new quiz";
         }
       ),
-      button("Start Quiz", true, () => show(quizPage()))
+      buttonOf("Start Quiz", true, () => show(quizPage()))
     )
   );
 
@@ -86,7 +86,7 @@ const quizQuestion = (question, nextQ, footer) => {
     const rep = i;
     build(
       base,
-      button(question.choices[i], true, () => {
+      buttonOf(question.choices[i], true, () => {
         if (question.choices[rep] != question.answer) {
           timer_value = timer_value - question_penalty;
         }
@@ -170,26 +170,41 @@ const quizEndPage = () =>
   );
 
 const highscores = () => {
-  const content = build(contentDiv("35%"), headerOf(2, "HighScores"));
+  const scoreDiv = div();
 
-  loadLocal()
-    .sort((a, b) => a.score - b.score)
-    .forEach(score =>
-      build(
-        content,
+  const refresh = () => {
+    clear(scoreDiv)
+    loadLocal()
+      .sort((a, b) => a.score - b.score)
+      .forEach(score =>
         build(
-          div({ width: "100%", height: "20px", "background-color": "steel" }),
-          headerOf(5, score.initials + ": " + score.score, { margin: "10px 0" })
+          scoreDiv,
+          build(
+            div({ width: "100%", height: "20px", "background-color": "steel" }),
+            headerOf(5, score.initials + ": " + score.score, {
+              margin: "10px 0"
+            })
+          )
         )
-      )
-    );
+      );
+  };
+
+  refresh();
 
   return build(
     div(),
-    build(content),
+    build(contentDiv("35%"), headerOf(2, "HighScores"), scoreDiv),
     build(
       contentDiv("35%"),
-      button("Back to Main Menu", null, () => show(home()))
+      build(
+        div({ display: "flex" }),
+        buttonOf("Back to Main Menu", null, () => show(home())),
+        buttonOf("Clear All HighScores", null, () => {
+          // clear saves
+          saveLocal([]);
+          refresh();
+        })
+      )
     )
   );
 };
