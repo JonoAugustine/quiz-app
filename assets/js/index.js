@@ -1,17 +1,13 @@
-// Templates
+// Components
 
-const nav = () => {
-  const base = div();
-  base.setAttribute(
-    "style",
-    readStyle({
+const nav = () =>
+  build(
+    div({
       top: 0,
       height: "30px",
       padding: "10px 10px 0 10px",
       "border-bottom": "1px solid grey"
-    })
-  );
-  base.appendChild(
+    }),
     elementOf(
       "a",
       {
@@ -22,9 +18,7 @@ const nav = () => {
         e.textContent = "View HighScores";
         e.setAttribute("onClick", "show(highscores())");
       }
-    )
-  );
-  base.appendChild(
+    ),
     elementOf(
       "div",
       {
@@ -44,42 +38,37 @@ const nav = () => {
       }
     )
   );
-  return base;
-};
 
-const home = () => {
-  const base = div();
-  base.appendChild(nav());
-  const content = contentDiv();
-  base.appendChild(content);
-  content.appendChild(
-    headerOf(1, "Coding Quiz Challenge", { "text-align": "center" })
-  );
-  content.appendChild(
-    elementOf(
-      "h4",
-      {
-        "text-align": "center"
-      },
-      e => {
-        e.textContent = "Click to start a new quiz";
-      }
+const home = () =>
+  build(
+    div(),
+    nav(),
+    build(
+      contentDiv(),
+      headerOf(1, "Coding Quiz Challenge", { "text-align": "center" }),
+      elementOf(
+        "h4",
+        {
+          "text-align": "center"
+        },
+        e => {
+          e.textContent = "Click to start a new quiz";
+        }
+      ),
+      button("Start Quiz", true, () => show(quizPage()))
     )
   );
-  content.appendChild(button("Start Quiz", true, () => startQuiz()));
-  return base;
-};
 
 const quizQuestion = (question, nextQ, footer) => {
   const footerNotif = (right, timout) => {
-    footer.appendChild(
-      elementOf(
-        "h3",
-        {
-          /* todo */
-        },
+    clear(footer);
+    build(
+      footer,
+      headerOf(
+        3,
+        (right ? "Correct" : "Wrong") + "!",
+        { "text-align": "center" },
         e => {
-          e.textContent = (right ? "Correct" : "Wrong") + "!";
           setTimeout(() => {
             e.textContent = "";
           }, timout);
@@ -88,21 +77,18 @@ const quizQuestion = (question, nextQ, footer) => {
     );
   };
 
-  const base = div();
-
-  base.appendChild(
-    elementOf("h2", {}, e => {
-      e.textContent = question.text;
-    })
+  const base = build(
+    div(),
+    headerOf(2, question.text, { "text-align": "center" })
   );
 
   for (var i = 0; i < question.choices.length; i++) {
     const rep = i;
-    base.appendChild(
-      button(question.choices[i], false, () => {
-        console.log(question, rep);
+    build(
+      base,
+      button(question.choices[i], true, () => {
         if (question.choices[rep] != question.answer) {
-          timer_value = timer_value - 10;
+          timer_value = timer_value - question_penalty;
         }
         footerNotif(question.choices[rep] == question.answer, default_timout);
         nextQ();
@@ -115,29 +101,27 @@ const quizQuestion = (question, nextQ, footer) => {
 
 const quizPage = () => {
   timer_value = default_timer;
-  const base = div();
-  base.appendChild(nav(timer_value));
+  const base = build(div(), nav());
 
   const content = contentDiv("40%");
-  content.setAttribute("id", "content");
-  base.appendChild(content);
+  build(base, content);
 
   // Make a footer to show answer results
   const footer = contentDiv("30%");
-  base.appendChild(footer);
+  build(base, footer);
 
   let availableQ = questions;
 
   const nextQ = () => {
     if (availableQ.length == 0) {
-      return endQuiz(timer_value);
+      show(quizEndPage());
+    } else {
+      clear(content);
+      let r = Math.floor(Math.random() * availableQ.length);
+      let randQ = availableQ[r];
+      availableQ.splice(r, 1);
+      build(content, quizQuestion(randQ, nextQ, footer));
     }
-    clear(content);
-    let r = Math.floor(Math.random() * availableQ.length);
-    let randQ = availableQ[r];
-    availableQ.splice(r, 1);
-    console.log(r);
-    content.appendChild(quizQuestion(randQ, nextQ, footer));
   };
 
   nextQ();
@@ -145,54 +129,69 @@ const quizPage = () => {
   return base;
 };
 
-const quizEndPage = () => {
-  const base = div();
-  const content = contentDiv("35%");
-  base.appendChild(content);
-
-  content.appendChild(headerOf(2, "All Done!"));
-  content.appendChild(headerOf(4, "Here's your score: " + timer_value));
-
-  const form = elementOf(
-    "form",
-    {
-      display: "flex",
-      height: "20px"
-    },
-    e => {
-      e.action = "javascript:saveResults();";
-    }
-  );
-  form.appendChild(headerOf(5, "You'r Initials: ", { margin: "2px 10px 0 0" }));
-  form.appendChild(
-    elementOf("input", {}, e => {
-      e.setAttribute("id", "form_in");
-    })
-  );
-  form.appendChild(
-    elementOf(
-      "button",
-      {
-        width: "100px",
-        height: "20px",
-        margin: "0 0 0 10px",
-        "border-color": "black",
-        "background-color": "white"
-      },
-      e => {
-        e.textContent = "Submit";
-        e.type = "submit";
-      }
+const quizEndPage = () =>
+  build(
+    div(),
+    build(
+      contentDiv("35%"),
+      headerOf(2, "All Done!"),
+      headerOf(4, "Here's your score: " + timer_value),
+      build(
+        elementOf(
+          "form",
+          {
+            display: "flex",
+            height: "20px"
+          },
+          e => {
+            e.action = "javascript:saveResults();";
+          }
+        ),
+        headerOf(5, "You'r Initials: ", { margin: "2px 10px 0 0" }),
+        elementOf("input", {}, e => {
+          e.setAttribute("id", "form_in");
+        }),
+        elementOf(
+          "button",
+          {
+            width: "100px",
+            height: "20px",
+            margin: "0 0 0 10px",
+            "border-color": "black",
+            "background-color": "white"
+          },
+          e => {
+            e.textContent = "Submit";
+            e.type = "submit";
+          }
+        )
+      )
     )
   );
-  content.appendChild(form);
-  return base;
-};
 
 const highscores = () => {
-  const base = div(true);
-  base.appendChild(button("Back to Main Menu", "green", () => show(home())));
-  return base;
+  const content = build(contentDiv("35%"), headerOf(2, "HighScores"));
+
+  loadLocal()
+    .sort((a, b) => a.score - b.score)
+    .forEach(score =>
+      build(
+        content,
+        build(
+          div({ width: "100%", height: "20px", "background-color": "steel" }),
+          headerOf(5, score.initials + ": " + score.score, { margin: "10px 0" })
+        )
+      )
+    );
+
+  return build(
+    div(),
+    build(content),
+    build(
+      contentDiv("35%"),
+      button("Back to Main Menu", null, () => show(home()))
+    )
+  );
 };
 
 // API
@@ -200,17 +199,11 @@ const highscores = () => {
 const saveResults = () => {
   const initials = document.getElementById("form_in").value;
   if (initials.length > 0) {
-    // TODO save to localstorage https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage
+    let s = loadLocal();
+    s.push({ initials: initials, score: timer_value });
+    saveLocal(s);
+    show(highscores());
   }
 };
 
-const startQuiz = () => {
-  show(quizPage());
-};
-
-const endQuiz = () => {
-  console.log("Quiz Ended, score " + timer_value);
-  show(quizEndPage());
-};
-
-show(home(), false);
+show(highscores());
