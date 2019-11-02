@@ -39,16 +39,17 @@ const elementOf = (tag, style, scope) => {
 };
 
 /** Get a plain div. */
-const div = style => elementOf("div", style);
+const divOf = style => elementOf("div", style);
 
 /**
  * Get a centered div.
  * @param {String} width The centered width of the div. will be `70%` if null.
  */
-const contentDiv = width =>
+const containerOfWidth = (width, appendStyle) =>
   elementOf("div", {
     margin: "5% auto 0 auto",
-    width: width == null ? "70%" : width
+    width: width == null ? "70%" : width,
+    ...appendStyle
   });
 
 /**
@@ -75,16 +76,15 @@ const headerOf = (level, text, style, scope) =>
  * @param {boolean} centered whether the button should be centered.
  * @param {function} onClick The function to call on click.
  */
-const buttonOf = (text, centered, onClick) =>
+const buttonOf = (text, centered, onClick, appendStyle) =>
   elementOf(
     "button",
     {
-      width: "150px",
-      height: "25px",
       "border-color": "black",
       "background-color": "white",
-      margin: centered ? "0 auto" : "",
-      display: "block"
+      margin: `0.5em ${centered ? "auto" : "0.5em"}`,
+      display: "block",
+      ...appendStyle
     },
     e => {
       e.innerHTML = text;
@@ -145,7 +145,7 @@ const loadLocal = () => {
     saveLocal(s);
   } else {
     s = JSON.parse(s);
-    console.log('read as: "' + s + '"');
+    console.log("read as: ", s);
   }
   return s;
 };

@@ -1,8 +1,8 @@
 // Components
 
-const nav = (start_timer) =>
+const nav = start_timer =>
   build(
-    div({
+    divOf({
       top: 0,
       height: "30px",
       padding: "10px 10px 0 10px",
@@ -42,10 +42,10 @@ const nav = (start_timer) =>
 
 const home = () =>
   build(
-    div(),
+    divOf(),
     nav(),
     build(
-      contentDiv(),
+      containerOfWidth(),
       headerOf(1, "Coding Quiz Challenge", { "text-align": "center" }),
       elementOf(
         "h4",
@@ -79,7 +79,7 @@ const quizQuestion = (question, nextQ, footer) => {
   };
 
   const base = build(
-    div(),
+    divOf(),
     headerOf(2, question.text, { "text-align": "center" })
   );
 
@@ -87,13 +87,20 @@ const quizQuestion = (question, nextQ, footer) => {
     const rep = i;
     build(
       base,
-      buttonOf(question.choices[i], true, () => {
-        if (question.choices[rep] != question.answer) {
-          timer_value = timer_value - question_penalty;
+      buttonOf(
+        question.choices[i],
+        true,
+        () => {
+          if (question.choices[rep] != question.answer) {
+            timer_value = timer_value - question_penalty;
+          }
+          footerNotif(question.choices[rep] == question.answer, default_timout);
+          nextQ();
+        },
+        {
+          width: "100%"
         }
-        footerNotif(question.choices[rep] == question.answer, default_timout);
-        nextQ();
-      })
+      )
     );
   }
 
@@ -102,13 +109,13 @@ const quizQuestion = (question, nextQ, footer) => {
 
 const quizPage = () => {
   timer_value = default_timer;
-  const base = build(div(), nav(true));
+  const base = build(divOf(), nav(true));
 
-  const content = contentDiv("40%");
+  const content = containerOfWidth("40%");
   build(base, content);
 
   // Make a footer to show answer results
-  const footer = contentDiv("30%");
+  const footer = containerOfWidth("30%");
   build(base, footer);
 
   let currentQ = 0;
@@ -130,47 +137,44 @@ const quizPage = () => {
 const quizEndPage = () => {
   clearInterval(timer_interval);
   return build(
-    div(),
+    containerOfWidth("35%"),
+    headerOf(2, "All Done!"),
+    headerOf(4, "Here's your score: " + timer_value),
     build(
-      contentDiv("35%"),
-      headerOf(2, "All Done!"),
-      headerOf(4, "Here's your score: " + timer_value),
-      build(
-        elementOf(
-          "form",
-          {
-            display: "flex",
-            height: "20px"
-          },
-          e => {
-            e.action = "javascript:saveResults();";
-          }
-        ),
-        headerOf(5, "You'r Initials: ", { margin: "2px 10px 0 0" }),
-        elementOf("input", {}, e => {
-          e.setAttribute("id", "form_in");
-        }),
-        elementOf(
-          "button",
-          {
-            width: "100px",
-            height: "20px",
-            margin: "0 0 0 10px",
-            "border-color": "black",
-            "background-color": "white"
-          },
-          e => {
-            e.textContent = "Submit";
-            e.type = "submit";
-          }
-        )
+      elementOf(
+        "form",
+        {
+          display: "flex",
+          height: "20px"
+        },
+        e => {
+          e.action = "javascript:saveResults();";
+        }
+      ),
+      headerOf(5, "You'r Initials: ", { margin: "2px 10px 0 0" }),
+      elementOf("input", {}, e => {
+        e.setAttribute("id", "form_in");
+      }),
+      elementOf(
+        "button",
+        {
+          width: "100px",
+          height: "20px",
+          margin: "0 0 0 10px",
+          "border-color": "black",
+          "background-color": "white"
+        },
+        e => {
+          e.textContent = "Submit";
+          e.type = "submit";
+        }
       )
     )
   );
 };
 
 const highscores = () => {
-  const scoreDiv = div();
+  const scoreDiv = divOf();
 
   const refresh = () => {
     clear(scoreDiv);
@@ -180,7 +184,11 @@ const highscores = () => {
         build(
           scoreDiv,
           build(
-            div({ width: "100%", height: "20px", "background-color": "steel" }),
+            divOf({
+              width: "100%",
+              height: "20px",
+              "background-color": "steel"
+            }),
             headerOf(5, score.initials + ": " + score.score, {
               margin: "10px 0"
             })
@@ -192,12 +200,12 @@ const highscores = () => {
   refresh();
 
   return build(
-    div(),
-    build(contentDiv("35%"), headerOf(2, "HighScores"), scoreDiv),
+    divOf(),
+    build(containerOfWidth("35%"), headerOf(2, "HighScores"), scoreDiv),
     build(
-      contentDiv("35%"),
+      containerOfWidth("35%"),
       build(
-        div({ display: "flex" }),
+        divOf({ display: "inline-block" }),
         buttonOf("Back to Main Menu", null, () => show(home())),
         buttonOf("Clear All HighScores", null, () => {
           // clear saves
@@ -219,7 +227,7 @@ const saveResults = () => {
     saveLocal(s);
     show(highscores());
   }
-  timer_value = null
+  timer_value = null;
 };
 
-show(home());
+show(quizEndPage());
