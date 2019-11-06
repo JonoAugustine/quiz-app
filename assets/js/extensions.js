@@ -145,7 +145,7 @@ const loadLocal = () => {
     saveLocal(s);
   } else {
     s = JSON.parse(s);
-    console.log('read as: "' + s + '"');
+    console.log("read as: ", s);
   }
   return s;
 };
