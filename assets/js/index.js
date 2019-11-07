@@ -230,4 +230,4 @@ const saveResults = () => {
   timer_value = null;
 };
 
-show(quizEndPage());
+show(home());

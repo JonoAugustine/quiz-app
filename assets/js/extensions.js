@@ -1,5 +1,6 @@
 /** Root/parent div element. */
 const root = document.querySelector("#root");
+root.setAttribute("style", "{margin: 0;}");
 
 /**
  * Converts a style object into a string to be used with setAttribute.
