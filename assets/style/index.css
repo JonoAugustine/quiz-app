@@ -1,5 +1,13 @@
-html, body {
-    font-size: 4vw;
-    color: white;
-    background-color: #313131;
+html,
+body {
+  font-size: 4vw;
+  color: white;
+  background-color: #313131;
+}
+
+@media (min-width: 600) {
+  html,
+  body {
+    font-size: 3vw;
+  }
 }

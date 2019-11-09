@@ -88,7 +88,7 @@ const buttonOf = (text, centered, onClick, appendStyle) =>
       padding: "0.5em 0.7em",
       margin: `0.5em ${centered ? "auto" : "0.5em"}`,
       display: "block",
-      "font-size": "0.6em",
+      "font-size": "0.5em",
       ...appendStyle
     },
     e => {

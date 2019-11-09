@@ -113,7 +113,7 @@ const quizPage = () => {
   build(base, content);
 
   // Make a footer to show answer results
-  const footer = containerOfWidth("30%");
+  const footer = containerOfWidth("30%", { top: 0, position: "absolute" });
   build(base, footer);
 
   let currentQ = 0;
@@ -188,8 +188,6 @@ const highscores = () => {
           scoreDiv,
           build(
             divOf({
-              width: "100%",
-              height: "20px",
               "background-color": "steel"
             }),
             headerOf(5, score.initials + ": " + score.score, {
