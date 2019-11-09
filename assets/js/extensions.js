@@ -81,10 +81,14 @@ const buttonOf = (text, centered, onClick, appendStyle) =>
   elementOf(
     "button",
     {
-      "border-color": "black",
-      "background-color": "white",
+      color: "white",
+      border: "1px solid white",
+      "border-radius": "5px",
+      "background-color": "black",
+      padding: "0.5em 0.7em",
       margin: `0.5em ${centered ? "auto" : "0.5em"}`,
       display: "block",
+      "font-size": "0.6em",
       ...appendStyle
     },
     e => {

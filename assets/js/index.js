@@ -4,15 +4,15 @@ const nav = start_timer =>
   build(
     divOf({
       top: 0,
-      height: "30px",
+      display: "flex",
+      "font-size": "4vw",
       padding: "10px 10px 0 10px",
       "border-bottom": "1px solid grey"
     }),
     elementOf(
       "a",
       {
-        color: "purple",
-        float: "left"
+        cursor: "pointer"
       },
       e => {
         e.textContent = "View HighScores";
@@ -22,7 +22,7 @@ const nav = start_timer =>
     elementOf(
       "div",
       {
-        float: "right"
+        "margin-left": "55%"
       },
       e => {
         e.textContent = "Time: " + (timer_value == null ? 0 : timer_value);
@@ -44,9 +44,9 @@ const home = () =>
   build(
     divOf(),
     nav(),
+    headerOf(1, "Coding Quiz Challenge", { "text-align": "center" }),
     build(
       containerOfWidth(),
-      headerOf(1, "Coding Quiz Challenge", { "text-align": "center" }),
       elementOf(
         "h4",
         {
@@ -137,32 +137,37 @@ const quizPage = () => {
 const quizEndPage = () => {
   clearInterval(timer_interval);
   return build(
-    containerOfWidth("35%"),
+    containerOfWidth("80%"),
     headerOf(2, "All Done!"),
     headerOf(4, "Here's your score: " + timer_value),
     build(
+      elementOf("form", { display: "flex" }, e => {
+        e.action = "javascript:saveResults();";
+      }),
+      headerOf(5, "You'r Initials: ", { margin: "2px 10px 0 0" }),
       elementOf(
-        "form",
+        "input",
         {
-          display: "flex",
-          height: "20px"
+          width: '100px',
+          "font-size": "0.7em",
+          border: "none",
+          "border-bottom": "1px solid white",
+          color: "white",
+          "background-color": "transparent"
         },
         e => {
-          e.action = "javascript:saveResults();";
+          e.setAttribute("id", "form_in");
         }
       ),
-      headerOf(5, "You'r Initials: ", { margin: "2px 10px 0 0" }),
-      elementOf("input", {}, e => {
-        e.setAttribute("id", "form_in");
-      }),
       elementOf(
         "button",
         {
-          width: "100px",
-          height: "20px",
+          padding: '10px',
           margin: "0 0 0 10px",
-          "border-color": "black",
-          "background-color": "white"
+          border: "none",
+          "font-size": "0.6em",
+          color: "white",
+          "background-color": "forestgreen"
         },
         e => {
           e.textContent = "Submit";
@@ -230,4 +235,4 @@ const saveResults = () => {
   timer_value = null;
 };
 
-show(home());
+show(quizEndPage());
