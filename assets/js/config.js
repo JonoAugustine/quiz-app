@@ -23,7 +23,7 @@ const second = 1000;
 const default_timout = 1 * second;
 
 /** Time allotted for each question. */
-const time_per_question = 10;
+const time_per_question = 15;
 /** Default quiz time limit */
 const default_timer = questions.length * time_per_question;
 /** Seconds to remove for incorrect answers */

@@ -9,16 +9,10 @@ const nav = start_timer =>
       padding: "10px 10px 0 10px",
       "border-bottom": "1px solid grey"
     }),
-    elementOf(
-      "a",
-      {
-        cursor: "pointer"
-      },
-      e => {
-        e.textContent = "View HighScores";
-        e.setAttribute("onClick", "show(highscores())");
-      }
-    ),
+    elementOf("a", { cursor: "pointer" }, e => {
+      e.textContent = "View HighScores";
+      e.setAttribute("onClick", "show(highscores())");
+    }),
     elementOf(
       "div",
       {
@@ -49,12 +43,16 @@ const home = () =>
       containerOfWidth(),
       elementOf(
         "h4",
-        {
-          "text-align": "center"
-        },
-        e => {
-          e.textContent = "Click to start a new quiz";
-        }
+        { "text-align": "center" },
+        e => (e.textContent = "Click to start a new quiz")
+      ),
+      elementOf(
+        "p",
+        { "font-size": "0.6em" },
+        e =>
+          (e.textContent = `You will have 15 seconds
+      for each question. Each incorrectly answered 
+      question will deduct 10 seconds from the timer.`)
       ),
       buttonOf("Start Quiz", true, () => show(quizPage()))
     )
@@ -98,7 +96,7 @@ const quizQuestion = (question, nextQ, footer) => {
           nextQ();
         },
         {
-          width: "100%"
+          width: "50%"
         }
       )
     );
@@ -111,7 +109,7 @@ const quizPage = () => {
   timer_value = default_timer;
   const base = build(divOf(), nav(true));
 
-  const content = containerOfWidth("40%");
+  const content = containerOfWidth("50%");
   build(base, content);
 
   // Make a footer to show answer results
@@ -148,7 +146,7 @@ const quizEndPage = () => {
       elementOf(
         "input",
         {
-          width: '100px',
+          width: "100px",
           "font-size": "0.7em",
           border: "none",
           "border-bottom": "1px solid white",
@@ -162,7 +160,7 @@ const quizEndPage = () => {
       elementOf(
         "button",
         {
-          padding: '10px',
+          padding: "10px",
           margin: "0 0 0 10px",
           border: "none",
           "font-size": "0.6em",
